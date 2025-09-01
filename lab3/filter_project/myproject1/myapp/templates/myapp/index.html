@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8" />
+    <title>نظام الفلترة المتقدم في Django</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            direction: rtl;
+            background: #f9f9f9;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 10px #ccc;
+        }
+        mark {
+            color: #000;
+            padding: 0 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        .example-text {
+            font-size: 1.1em;
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+        .explanation {
+            font-size: 0.95em;
+            color: #555;
+            margin-top: 10px;
+        }
+        .keyword-stats {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f8ff;
+            border-radius: 8px;
+            border-right: 4px solid #4CAF50;
+        }
+        .keyword-stats h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .keyword-stats ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .keyword-stats li {
+            padding: 5px 0;
+            font-size: 1em;
+        }
+        .input-area {
+            margin: 20px 0;
+        }
+        .input-area textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            min-height: 100px;
+        }
+        .input-area input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .input-area button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .input-area button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<h1>نظام الفلترة المتقدم للكلمات المفتاحية في Django</h1>
+
+<section>
+    <h2>فلتر <code>highlight_keywords</code> المتقدم</h2>
+    <p>هذا الفلتر المتطور يقوم بتمييز عدة كلمات مفتاحية داخل النص بألوان مختلفة، مع عرض إحصاءات عن عدد مرات ظهور كل كلمة.</p>
+    
+    <div class="input-area">
+        <h3>جرب الفلتر بنفسك:</h3>
+        <form id="keywordForm">
+            <textarea id="textInput" placeholder="أدخل النص هنا...">مرحباً بكم في دورة Django الرائعة لتعلم البرمجة. Django هو إطار عمل قوي وسهل التعلم. تعلموا البرمجة مع Django واستمتعوا بتطوير التطبيقات الويب.</textarea>
+            <input type="text" id="keywordsInput" placeholder="أدخل الكلمات المفتاحية مفصولة بفواصل (،)" value="Django, البرمجة, تعلم">
+            <button type="button" onclick="applyFilter()">تطبيق الفلتر</button>
+        </form>
+    </div>
+    
+    <div id="filterResult">
+        <p class="example-text">النص الأصلي: <strong>مرحباً بكم في دورة Django الرائعة لتعلم البرمجة. Django هو إطار عمل قوي وسهل التعلم. تعلموا البرمجة مع Django واستمتعوا بتطوير التطبيقات الويب.</strong></p>
+        <p class="example-text">النص بعد تطبيق الفلتر للكلمات المفتاحية <code>"Django"</code>, <code>"البرمجة"</code>, <code>"تعلم"</code>:</p>
+        <p class="example-text">{{ sample_text|highlight_keywords:keywords_list }}</p>
+    </div>
+    
+    <div class="explanation">
+        <p>يتميز هذا الفلتر المتقدم بالقدرة على:</p>
+        <ul>
+            <li>تمييز عدة كلمات مفتاحية بلون مختلف لكل كلمة</li>
+            <li>عرض إحصاءات بعدد مرات ظهور كل كلمة مفتاحية</li>
+            <li>دعم النصوص العربية بشكل كامل</li>
+            <li>الحفاظ على الترقيم والمسافات في النص الأصلي</li>
+        </ul>
+    </div>
+</section>
+
+<section>
+    <h2>2. فلتر <code>relative_date_ar</code></h2>
+    <p>هذا الفلتر يعرض التاريخ والوقت بشكل نسبي باللغة العربية، مثلاً <em>منذ 3 أيام</em> أو <em>بعد يومين</em> بدلاً من التاريخ الكامل.</p>
+    <p class="example-text">التاريخ الحالي: <strong>{{ now }}</strong></p>
+    <p class="example-text">مثال على تاريخ في الماضي (قبل 3 أيام): <strong>{{ past_date|relative_date_ar }}</strong></p>
+    <p class="example-text">مثال على تاريخ في المستقبل (بعد يومين): <strong>{{ future_date|relative_date_ar }}</strong></p>
+    <div class="explanation">
+        هذا الفلتر يجعل عرض التواريخ أسهل للفهم وأكثر طبيعية عند القراءة.
+    </div>
+</section>
+
+<section>
+    <h2>ملاحظات عامة</h2>
+    <ul>
+        <li>يمكن استخدام فلتر <code>highlight_keywords</code> لتحليل النصوص وإبراز الكلمات المهمة فيها</li>
+        <li>فلتر <code>relative_date_ar</code> مفيد جداً لعرض التواريخ بطريقة ودودة للمستخدمين العرب</li>
+        <li>يمكن تعديل أو تحسين الفلاتر حسب الحاجة بسهولة في ملف <code>custom_filters.py</code></li>
+        <li>هذه الفلاتر المتقدمة تظهر قوة Django في معالجة النصوص والعروض التقديمية</li>
+    </ul>
+</section>
+
+<script>
+    function applyFilter() {
+        const text = document.getElementById('textInput').value;
+        const keywords = document.getElementById('keywordsInput').value.split('،').join(',').split(',').map(k => k.trim()).filter(k => k);
+        
+        // في تطبيق حقيقي، سنقوم بإرسال طلب AJAX إلى الخادم
+        // ولكن لأغراض العرض، سنقوم بمحاكاة العملية
+        
+        // إنشاء محاكاة للنتيجة
+        const colors = ["#FF5733", "#33FF57", "#3357FF", "#F033FF", "#FF33A1"];
+        let highlightedText = text;
+        let keywordCount = {};
+        
+        keywords.forEach((keyword, i) => {
+            const color = colors[i % colors.length];
+            const regex = new RegExp(`\\b${keyword}\\b`, 'gi');
+            keywordCount[keyword] = (highlightedText.match(regex) || []).length;
+            highlightedText = highlightedText.replace(regex, `<mark style="background-color: ${color}">$&</mark>`);
+        });
+        
+        // إنشاء إحصاءات
+        let statsHtml = '<div class="keyword-stats"><h3>إحصاءات الكلمات المفتاحية:</h3><ul>';
+        for (const [keyword, count] of Object.entries(keywordCount)) {
+            const color = colors[keywords.indexOf(keyword) % colors.length];
+            statsHtml += `<li><span style="background-color: ${color}; padding: 2px 5px; border-radius: 3px;">${keyword}</span>: ظهرت ${count} مرات</li>`;
+        }
+        statsHtml += '</ul></div>';
+        
+        // عرض النتيجة
+        document.getElementById('filterResult').innerHTML = `
+            <p class="example-text">النص بعد تطبيق الفلتر للكلمات المفتاحية <code>"${keywords.join('", "')}"</code>:</p>
+            <p class="example-text">${highlightedText}</p>
+            ${statsHtml}
+        `;
+    }
+</script>
+
+</body>
+</html>

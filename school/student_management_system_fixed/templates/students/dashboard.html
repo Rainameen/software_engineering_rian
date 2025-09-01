@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - Student Management System{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Dashboard</h1>
+                <p class="page-subtitle">Overview of your student management system</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stats-card" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);">
+            <div class="stats-number">{{ total_students }}</div>
+            <div class="stats-label">
+                <i class="fas fa-users me-1"></i>
+                Total Students
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stats-card" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+            <div class="stats-number">{{ active_students }}</div>
+            <div class="stats-label">
+                <i class="fas fa-user-check me-1"></i>
+                Active Students
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stats-card" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+            <div class="stats-number">{{ inactive_students }}</div>
+            <div class="stats-label">
+                <i class="fas fa-user-times me-1"></i>
+                Inactive Students
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stats-card" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+            <div class="stats-number">{{ avg_gpa }}</div>
+            <div class="stats-label">
+                <i class="fas fa-chart-line me-1"></i>
+                Average GPA
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row mb-4">
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>
+                    Students by Academic Year
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="yearChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-doughnut me-2"></i>
+                    Gender Distribution
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="genderChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-bolt me-2"></i>
+                    Quick Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <a href="{% url 'student_create' %}" class="btn btn-primary w-100 py-3">
+                            <i class="fas fa-user-plus fa-2x mb-2 d-block"></i>
+                            Add New Student
+                        </a>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <a href="{% url 'student_list' %}" class="btn btn-success w-100 py-3">
+                            <i class="fas fa-list fa-2x mb-2 d-block"></i>
+                            View All Students
+                        </a>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <a href="{% url 'export_csv' %}" class="btn btn-warning w-100 py-3">
+                            <i class="fas fa-download fa-2x mb-2 d-block"></i>
+                            Export Data
+                        </a>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <a href="{% url 'advanced_queries' %}" class="btn btn-info w-100 py-3">
+                            <i class="fas fa-search fa-2x mb-2 d-block"></i>
+                            Query Examples
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-clock me-2"></i>
+                    System Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-database text-primary fa-2x"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0">Database Status</h6>
+                                <small class="text-success">
+                                    <i class="fas fa-check-circle me-1"></i>
+                                    Connected & Operational
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-server text-success fa-2x"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0">System Status</h6>
+                                <small class="text-success">
+                                    <i class="fas fa-check-circle me-1"></i>
+                                    All Systems Running
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-shield-alt text-warning fa-2x"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0">Security</h6>
+                                <small class="text-warning">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>
+                                    Development Mode
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Year Distribution Chart
+    const yearCtx = document.getElementById('yearChart').getContext('2d');
+    const yearData = {
+        labels: [
+            {% for stat in year_stats %}
+                '{% if stat.year == "1" %}First Year{% elif stat.year == "2" %}Second Year{% elif stat.year == "3" %}Third Year{% elif stat.year == "4" %}Fourth Year{% endif %}'{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ],
+        datasets: [{
+            data: [
+                {% for stat in year_stats %}
+                    {{ stat.count }}{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ],
+            backgroundColor: [
+                '#2563eb',
+                '#10b981',
+                '#f59e0b',
+                '#8b5cf6'
+            ],
+            borderWidth: 0,
+            hoverOffset: 10
+        }]
+    };
+    
+    new Chart(yearCtx, {
+        type: 'doughnut',
+        data: yearData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true
+                    }
+                }
+            }
+        }
+    });
+    
+    // Gender Distribution Chart
+    const genderCtx = document.getElementById('genderChart').getContext('2d');
+    const genderData = {
+        labels: [
+            {% for stat in gender_stats %}
+                '{% if stat.gender == "M" %}Male{% else %}Female{% endif %}'{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ],
+        datasets: [{
+            data: [
+                {% for stat in gender_stats %}
+                    {{ stat.count }}{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ],
+            backgroundColor: [
+                '#2563eb',
+                '#ec4899'
+            ],
+            borderWidth: 0,
+            hoverOffset: 10
+        }]
+    };
+    
+    new Chart(genderCtx, {
+        type: 'pie',
+        data: genderData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
+

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}لوحة تحكم المعلم{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">مرحباً بك، {{ teacher.full_name }}!</h1>
+    <p class="lead">الرقم الوظيفي: {{ teacher.employee_id }}</p>
+    <p class="lead">القسم: {{ teacher.department.name }}</p>
+    <p class="lead">الدرجة العلمية: {{ teacher.get_rank_display }}</p>
+
+    <h2 class="mt-5">المقررات التي تدرسها:</h2>
+    {% if courses %}
+    <div class="list-group">
+        {% for course in courses %}
+        <a href="{% url 'teacher_course_detail' course.id %}" class="list-group-item list-group-item-action">
+            <h5 class="mb-1">{{ course.name }} ({{ course.code }})</h5>
+            <p class="mb-1">الفصل: {{ course.semester }} - السنة: {{ course.year }}</p>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        لا توجد مقررات مسندة إليك حالياً.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+

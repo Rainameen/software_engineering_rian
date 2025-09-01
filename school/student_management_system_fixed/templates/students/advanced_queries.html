@@ -1,0 +1,446 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Advanced Queries - Student Management System{% endblock %}
+
+{% block page_title %}Advanced Queries{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Advanced QuerySet Examples</h1>
+                <p class="page-subtitle">Demonstration of Django QuerySet operations from the presentation</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Introduction -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-info" role="alert">
+            <h5 class="alert-heading">
+                <i class="fas fa-info-circle me-2"></i>About QuerySet Operations
+            </h5>
+            <p class="mb-0">
+                This page demonstrates the advanced Django QuerySet operations covered in the Software Engineering Lab 5 presentation.
+                Each section shows different ways to query and filter student data using Django's powerful ORM.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Order By Examples -->
+<div class="row mb-4">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-sort-alpha-up me-2"></i>Order By (Ascending)
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">
+                    <code>Student.objects.order_by('first_name')</code>
+                </p>
+                {% if students_asc %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Age</th>
+                                    <th>Year</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in students_asc %}
+                                <tr>
+                                    <td>{{ student.full_name }}</td>
+                                    <td>{{ student.age }}</td>
+                                    <td>{{ student.get_year_display }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No students found</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-sort-alpha-down me-2"></i>Order By (Descending)
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">
+                    <code>Student.objects.order_by('-first_name')</code>
+                </p>
+                {% if students_desc %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Age</th>
+                                    <th>Year</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in students_desc %}
+                                <tr>
+                                    <td>{{ student.full_name }}</td>
+                                    <td>{{ student.age }}</td>
+                                    <td>{{ student.get_year_display }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No students found</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contains and In Examples -->
+<div class="row mb-4">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-search me-2"></i>Contains Search
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">
+                    <code>Student.objects.filter(first_name__contains='a')</code>
+                </p>
+                <p class="small text-info mb-3">Students with 'a' in their first name</p>
+                {% if name_contains %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in name_contains %}
+                                <tr>
+                                    <td>
+                                        {{ student.full_name }}
+                                        <span class="badge bg-primary">{{ student.first_name }}</span>
+                                    </td>
+                                    <td>{{ student.email }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No students found with 'a' in their first name</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-list me-2"></i>In Query (Multiple Values)
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">
+                    <code>Student.objects.filter(year__in=['1', '2', '3'])</code>
+                </p>
+                <p class="small text-info mb-3">Students in first three years</p>
+                {% if years_in %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Year</th>
+                                    <th>GPA</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in years_in %}
+                                <tr>
+                                    <td>{{ student.full_name }}</td>
+                                    <td>
+                                        <span class="badge bg-info">{{ student.get_year_display }}</span>
+                                    </td>
+                                    <td>{{ student.gpa }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No students found in first three years</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Range and Exact Examples -->
+<div class="row mb-4">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-arrows-alt-h me-2"></i>Range Query
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">
+                    <code>Student.objects.filter(age__range=[18, 25])</code>
+                </p>
+                <p class="small text-info mb-3">Students aged between 18 and 25</p>
+                {% if age_range %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Age</th>
+                                    <th>Year</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in age_range %}
+                                <tr>
+                                    <td>{{ student.full_name }}</td>
+                                    <td>
+                                        <span class="badge bg-warning">{{ student.age }}</span>
+                                    </td>
+                                    <td>{{ student.get_year_display }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No students found in age range 18-25</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-equals me-2"></i>Exact Match
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">
+                    <code>Student.objects.filter(year__exact='1')</code>
+                </p>
+                <p class="small text-info mb-3">Students in exactly first year</p>
+                {% if exact_year %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Student ID</th>
+                                    <th>GPA</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in exact_year %}
+                                <tr>
+                                    <td>{{ student.full_name }}</td>
+                                    <td>
+                                        <span class="badge bg-secondary">{{ student.student_id }}</span>
+                                    </td>
+                                    <td>{{ student.gpa }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No first year students found</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Exclude and Complex Query Examples -->
+<div class="row mb-4">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-times-circle me-2"></i>Exclude Query
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">
+                    <code>Student.objects.exclude(is_active=False)</code>
+                </p>
+                <p class="small text-info mb-3">Exclude inactive students (show only active)</p>
+                {% if exclude_inactive %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Status</th>
+                                    <th>Year</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in exclude_inactive %}
+                                <tr>
+                                    <td>{{ student.full_name }}</td>
+                                    <td>
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check me-1"></i>Active
+                                        </span>
+                                    </td>
+                                    <td>{{ student.get_year_display }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No active students found</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-code-branch me-2"></i>Complex Query (Q Objects)
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">
+                    <code>Q(first_name__icontains='Malek') | Q(age__lt=23)</code>
+                </p>
+                <p class="small text-info mb-3">Students named 'Malek' OR younger than 23</p>
+                {% if complex_query %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Age</th>
+                                    <th>Match Reason</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in complex_query %}
+                                <tr>
+                                    <td>{{ student.full_name }}</td>
+                                    <td>{{ student.age }}</td>
+                                    <td>
+                                        {% if 'Malek' in student.first_name %}
+                                            <span class="badge bg-primary">Name Match</span>
+                                        {% endif %}
+                                        {% if student.age < 23 %}
+                                            <span class="badge bg-warning">Age < 23</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No students found matching the complex query</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Query Explanation -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-book me-2"></i>QuerySet Operations Reference
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="text-primary mb-3">Basic Operations</h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <code class="text-success">order_by('field')</code> - Sort ascending
+                            </li>
+                            <li class="mb-2">
+                                <code class="text-success">order_by('-field')</code> - Sort descending
+                            </li>
+                            <li class="mb-2">
+                                <code class="text-success">filter(field=value)</code> - Include matching records
+                            </li>
+                            <li class="mb-2">
+                                <code class="text-success">exclude(field=value)</code> - Exclude matching records
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-primary mb-3">Field Lookups</h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <code class="text-info">field__contains='text'</code> - Contains substring
+                            </li>
+                            <li class="mb-2">
+                                <code class="text-info">field__in=[val1, val2]</code> - In list of values
+                            </li>
+                            <li class="mb-2">
+                                <code class="text-info">field__range=[start, end]</code> - Within range
+                            </li>
+                            <li class="mb-2">
+                                <code class="text-info">field__exact=value</code> - Exact match
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <hr class="my-3">
+                
+                <div class="alert alert-light" role="alert">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-lightbulb me-2"></i>Pro Tip
+                    </h6>
+                    <p class="mb-0">
+                        These QuerySet operations can be chained together for more complex queries. 
+                        For example: <code>Student.objects.filter(is_active=True).order_by('-gpa').exclude(year='4')</code>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

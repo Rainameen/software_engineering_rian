@@ -1,0 +1,299 @@
+{% extends 'base_ar.html' %}
+{% load static %}
+
+{% block title %}لوحة التحكم - نظام إدارة الطلاب{% endblock %}
+
+{% block page_title %}لوحة التحكم{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title arabic">لوحة التحكم</h1>
+                <p class="page-subtitle">نظرة عامة على نظام إدارة الطلاب</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- إحصائيات سريعة -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stats-card" style="background: linear-gradient(135deg, #2563eb, #1e40af); color: white;">
+            <div class="stats-number">
+                <i class="fas fa-users me-2"></i>
+                {{ total_students }}
+            </div>
+            <div class="stats-label" style="color: rgba(255,255,255,0.9);">إجمالي الطلاب</div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stats-card" style="background: linear-gradient(135deg, #10b981, #047857); color: white;">
+            <div class="stats-number">
+                <i class="fas fa-user-check me-2"></i>
+                {{ active_students }}
+            </div>
+            <div class="stats-label" style="color: rgba(255,255,255,0.9);">الطلاب النشطون</div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stats-card" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white;">
+            <div class="stats-number">
+                <i class="fas fa-user-times me-2"></i>
+                {{ inactive_students }}
+            </div>
+            <div class="stats-label" style="color: rgba(255,255,255,0.9);">الطلاب غير النشطين</div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stats-card" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white;">
+            <div class="stats-number">
+                <i class="fas fa-chart-line me-2"></i>
+                {{ average_gpa }}
+            </div>
+            <div class="stats-label" style="color: rgba(255,255,255,0.9);">متوسط المعدل التراكمي</div>
+        </div>
+    </div>
+</div>
+
+<!-- الرسوم البيانية -->
+<div class="row mb-4">
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>الطلاب حسب السنة الدراسية
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="yearChart" width="400" height="300"></canvas>
+                
+                <div class="mt-3 d-flex justify-content-center flex-wrap">
+                    <div class="me-3 mb-2">
+                        <span class="badge" style="background-color: #2563eb;">●</span>
+                        السنة الأولى
+                    </div>
+                    <div class="me-3 mb-2">
+                        <span class="badge" style="background-color: #10b981;">●</span>
+                        السنة الثانية
+                    </div>
+                    <div class="me-3 mb-2">
+                        <span class="badge" style="background-color: #f59e0b;">●</span>
+                        السنة الثالثة
+                    </div>
+                    <div class="me-3 mb-2">
+                        <span class="badge" style="background-color: #8b5cf6;">●</span>
+                        السنة الرابعة
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>توزيع الطلاب حسب الجنس
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="genderChart" width="400" height="300"></canvas>
+                
+                <div class="mt-3 d-flex justify-content-center flex-wrap">
+                    <div class="me-3 mb-2">
+                        <span class="badge" style="background-color: #2563eb;">●</span>
+                        الإناث
+                    </div>
+                    <div class="me-3 mb-2">
+                        <span class="badge" style="background-color: #ec4899;">●</span>
+                        الذكور
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- إجراءات سريعة -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-bolt me-2"></i>الإجراءات السريعة
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <a href="{% url 'student_create' %}" class="btn btn-primary w-100 py-3">
+                            <i class="fas fa-user-plus fa-2x mb-2 d-block"></i>
+                            إضافة طالب جديد
+                        </a>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <a href="{% url 'student_list' %}" class="btn btn-success w-100 py-3">
+                            <i class="fas fa-list fa-2x mb-2 d-block"></i>
+                            عرض جميع الطلاب
+                        </a>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <a href="{% url 'export_csv' %}" class="btn btn-warning w-100 py-3">
+                            <i class="fas fa-download fa-2x mb-2 d-block"></i>
+                            تصدير البيانات
+                        </a>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <a href="{% url 'advanced_queries' %}" class="btn btn-info w-100 py-3">
+                            <i class="fas fa-search fa-2x mb-2 d-block"></i>
+                            أمثلة الاستعلامات
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- آخر الطلاب المضافين -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-clock me-2"></i>آخر الطلاب المضافين
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if recent_students %}
+                    <div class="table-responsive">
+                        <table class="table table-arabic">
+                            <thead>
+                                <tr>
+                                    <th>الصورة</th>
+                                    <th>الاسم</th>
+                                    <th>رقم الطالب</th>
+                                    <th>السنة الدراسية</th>
+                                    <th>المعدل التراكمي</th>
+                                    <th>تاريخ التسجيل</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in recent_students %}
+                                <tr>
+                                    <td>
+                                        {% if student.photo %}
+                                            <img src="{{ student.photo.url }}" alt="{{ student.full_name }}" 
+                                                 class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                                        {% else %}
+                                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" 
+                                                 style="width: 40px; height: 40px; color: white; font-weight: bold;">
+                                                {{ student.first_name.0 }}{{ student.last_name.0 }}
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <strong>{{ student.full_name }}</strong>
+                                        <br>
+                                        <small class="text-muted">{{ student.email }}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">{{ student.student_id }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">{{ student.get_year_display }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge {% if student.gpa >= 3.5 %}bg-success{% elif student.gpa >= 2.5 %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ student.gpa }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <small>{{ student.date_enrolled|date:"d/m/Y" }}</small>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'student_detail' student.pk %}" class="btn btn-sm btn-outline-primary" title="عرض التفاصيل">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">لا توجد بيانات طلاب حالياً</p>
+                        <a href="{% url 'student_create' %}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>إضافة أول طالب
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // رسم بياني للسنوات الدراسية
+        const yearCtx = document.getElementById('yearChart').getContext('2d');
+        new Chart(yearCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['السنة الأولى', 'السنة الثانية', 'السنة الثالثة', 'السنة الرابعة'],
+                datasets: [{
+                    data: [{{ year_1_count }}, {{ year_2_count }}, {{ year_3_count }}, {{ year_4_count }}],
+                    backgroundColor: ['#2563eb', '#10b981', '#f59e0b', '#8b5cf6'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+        
+        // رسم بياني للجنس
+        const genderCtx = document.getElementById('genderChart').getContext('2d');
+        new Chart(genderCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['الإناث', 'الذكور'],
+                datasets: [{
+                    data: [{{ female_count }}, {{ male_count }}],
+                    backgroundColor: ['#2563eb', '#ec4899'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
+

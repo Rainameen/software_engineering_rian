@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Delete {{ student.full_name }} - Student Management System{% endblock %}
+
+{% block page_title %}Delete Student{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="page-title text-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Delete Student
+                    </h1>
+                    <p class="page-subtitle">This action cannot be undone</p>
+                </div>
+                <div>
+                    <a href="{% url 'student_detail' student.pk %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Details
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-trash me-2"></i>Confirm Deletion
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        {% if student.photo %}
+                            <img src="{{ student.photo.url }}" alt="{{ student.full_name }}" 
+                                 class="rounded-circle mb-3" width="120" height="120" style="object-fit: cover;">
+                        {% else %}
+                            <div class="rounded-circle bg-danger d-flex align-items-center justify-content-center mx-auto mb-3" 
+                                 style="width: 120px; height: 120px; color: white; font-size: 2.5rem; font-weight: bold;">
+                                {{ student.first_name.0 }}{{ student.last_name.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-8">
+                        <div class="alert alert-danger" role="alert">
+                            <h5 class="alert-heading">
+                                <i class="fas fa-exclamation-triangle me-2"></i>Warning!
+                            </h5>
+                            <p class="mb-0">
+                                You are about to permanently delete the student record for 
+                                <strong>{{ student.full_name }}</strong>. This action cannot be undone.
+                            </p>
+                        </div>
+                        
+                        <h5 class="mb-3">Student Information to be Deleted:</h5>
+                        
+                        <table class="table table-borderless">
+                            <tr>
+                                <td class="fw-bold text-muted">Full Name:</td>
+                                <td>{{ student.full_name }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-muted">Student ID:</td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ student.student_id }}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-muted">Email:</td>
+                                <td>{{ student.email }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-muted">Academic Year:</td>
+                                <td>
+                                    <span class="badge bg-info">{{ student.get_year_display }}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-muted">GPA:</td>
+                                <td>
+                                    <span class="badge {% if student.gpa >= 3.5 %}bg-success{% elif student.gpa >= 2.5 %}bg-warning{% else %}bg-danger{% endif %}">
+                                        {{ student.gpa }}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-muted">Date Enrolled:</td>
+                                <td>{{ student.date_enrolled|date:"F d, Y" }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-muted">Status:</td>
+                                <td>
+                                    {% if student.is_active %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check me-1"></i>Active
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-times me-1"></i>Inactive
+                                        </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <hr class="my-4">
+                
+                <div class="row">
+                    <div class="col-12">
+                        <div class="alert alert-warning" role="alert">
+                            <h6 class="alert-heading">
+                                <i class="fas fa-info-circle me-2"></i>What will be deleted:
+                            </h6>
+                            <ul class="mb-0">
+                                <li>All student personal information</li>
+                                <li>Academic records and GPA data</li>
+                                <li>Contact information</li>
+                                <li>Profile photo (if uploaded)</li>
+                                <li>Enrollment history</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <small class="text-muted">
+                                    <i class="fas fa-clock me-1"></i>
+                                    This action is immediate and cannot be reversed
+                                </small>
+                            </div>
+                            <div>
+                                <a href="{% url 'student_detail' student.pk %}" class="btn btn-outline-secondary me-3">
+                                    <i class="fas fa-times me-2"></i>Cancel
+                                </a>
+                                <form method="post" class="d-inline" id="deleteForm">
+                                    {% csrf_token %}
+                                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                                        <i class="fas fa-trash me-2"></i>Yes, Delete Student
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="confirmModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Final Confirmation
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3">
+                    <strong>This is your final warning!</strong>
+                </p>
+                <p class="mb-3">
+                    Are you absolutely sure you want to delete <strong>{{ student.full_name }}</strong>?
+                </p>
+                <p class="text-muted mb-0">
+                    Type <code>DELETE</code> in the box below to confirm:
+                </p>
+                <input type="text" class="form-control mt-2" id="confirmText" placeholder="Type DELETE to confirm">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-danger" id="finalDeleteBtn" disabled>
+                    <i class="fas fa-trash me-2"></i>Delete Forever
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+        const confirmText = document.getElementById('confirmText');
+        const finalDeleteBtn = document.getElementById('finalDeleteBtn');
+        const deleteForm = document.getElementById('deleteForm');
+        
+        // Show confirmation modal
+        confirmDeleteBtn.addEventListener('click', function() {
+            confirmModal.show();
+        });
+        
+        // Enable/disable final delete button based on confirmation text
+        confirmText.addEventListener('input', function() {
+            if (this.value === 'DELETE') {
+                finalDeleteBtn.disabled = false;
+                finalDeleteBtn.classList.remove('btn-danger');
+                finalDeleteBtn.classList.add('btn-danger');
+            } else {
+                finalDeleteBtn.disabled = true;
+            }
+        });
+        
+        // Handle final deletion
+        finalDeleteBtn.addEventListener('click', function() {
+            this.innerHTML = '<span class="loading me-2"></span>Deleting...';
+            this.disabled = true;
+            deleteForm.submit();
+        });
+        
+        // Reset modal when closed
+        document.getElementById('confirmModal').addEventListener('hidden.bs.modal', function() {
+            confirmText.value = '';
+            finalDeleteBtn.disabled = true;
+            finalDeleteBtn.innerHTML = '<i class="fas fa-trash me-2"></i>Delete Forever';
+        });
+    });
+</script>
+{% endblock %}
+

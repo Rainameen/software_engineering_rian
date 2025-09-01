@@ -1,0 +1,336 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ title }} - Student Management System{% endblock %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="page-title">{{ title }}</h1>
+                    <p class="page-subtitle">
+                        {% if student %}
+                            Update student information for {{ student.full_name }}
+                        {% else %}
+                            Fill in the form below to add a new student
+                        {% endif %}
+                    </p>
+                </div>
+                <div>
+                    <a href="{% if student %}{% url 'student_detail' student.pk %}{% else %}{% url 'student_list' %}{% endif %}" 
+                       class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        {% if student %}Back to Details{% else %}Back to List{% endif %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user-edit me-2"></i>Student Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Photo Preview -->
+                    {% if student.photo %}
+                    <div class="row mb-4">
+                        <div class="col-12 text-center">
+                            <div class="mb-3">
+                                <img src="{{ student.photo.url }}" alt="{{ student.full_name }}" 
+                                     class="rounded-circle" width="100" height="100" style="object-fit: cover;" id="photo-preview">
+                            </div>
+                            <small class="text-muted">Current photo</small>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="row">
+                        <!-- Personal Information -->
+                        <div class="col-md-6">
+                            <h6 class="text-muted mb-3 border-bottom pb-2">
+                                <i class="fas fa-user me-2"></i>Personal Information
+                            </h6>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                    <i class="fas fa-user me-1"></i>First Name *
+                                </label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.first_name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                    <i class="fas fa-user me-1"></i>Last Name *
+                                </label>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.last_name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.age.id_for_label }}" class="form-label">
+                                    <i class="fas fa-birthday-cake me-1"></i>Age *
+                                </label>
+                                {{ form.age }}
+                                {% if form.age.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.age.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.gender.id_for_label }}" class="form-label">
+                                    <i class="fas fa-venus-mars me-1"></i>Gender *
+                                </label>
+                                {{ form.gender }}
+                                {% if form.gender.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.gender.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.photo.id_for_label }}" class="form-label">
+                                    <i class="fas fa-camera me-1"></i>Photo
+                                </label>
+                                {{ form.photo }}
+                                {% if form.photo.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.photo.errors }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Upload a profile photo (optional)</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Contact Information -->
+                        <div class="col-md-6">
+                            <h6 class="text-muted mb-3 border-bottom pb-2">
+                                <i class="fas fa-address-book me-2"></i>Contact Information
+                            </h6>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.email.id_for_label }}" class="form-label">
+                                    <i class="fas fa-envelope me-1"></i>Email Address *
+                                </label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.email.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.phone.id_for_label }}" class="form-label">
+                                    <i class="fas fa-phone me-1"></i>Phone Number
+                                </label>
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.phone.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.address.id_for_label }}" class="form-label">
+                                    <i class="fas fa-map-marker-alt me-1"></i>Address
+                                </label>
+                                {{ form.address }}
+                                {% if form.address.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.address.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="row">
+                        <!-- Academic Information -->
+                        <div class="col-md-6">
+                            <h6 class="text-muted mb-3 border-bottom pb-2">
+                                <i class="fas fa-graduation-cap me-2"></i>Academic Information
+                            </h6>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.student_id.id_for_label }}" class="form-label">
+                                    <i class="fas fa-id-card me-1"></i>Student ID *
+                                </label>
+                                {{ form.student_id }}
+                                {% if form.student_id.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.student_id.errors }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Unique identifier for the student</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.year.id_for_label }}" class="form-label">
+                                    <i class="fas fa-calendar-alt me-1"></i>Academic Year *
+                                </label>
+                                {{ form.year }}
+                                {% if form.year.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.year.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.gpa.id_for_label }}" class="form-label">
+                                    <i class="fas fa-chart-line me-1"></i>GPA
+                                </label>
+                                {{ form.gpa }}
+                                {% if form.gpa.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.gpa.errors }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Grade Point Average (0.0 - 4.0)</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Status -->
+                        <div class="col-md-6">
+                            <h6 class="text-muted mb-3 border-bottom pb-2">
+                                <i class="fas fa-cog me-2"></i>Status & Settings
+                            </h6>
+                            
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    {{ form.is_active }}
+                                    <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                                        <i class="fas fa-toggle-on me-1"></i>Active Student
+                                    </label>
+                                </div>
+                                {% if form.is_active.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.is_active.errors }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Inactive students won't appear in regular listings</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <!-- Form Actions -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <small class="text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Fields marked with * are required
+                                    </small>
+                                </div>
+                                <div>
+                                    <a href="{% if student %}{% url 'student_detail' student.pk %}{% else %}{% url 'student_list' %}{% endif %}" 
+                                       class="btn btn-outline-secondary me-2">
+                                        <i class="fas fa-times me-2"></i>Cancel
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>
+                                        {% if student %}Update Student{% else %}Add Student{% endif %}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Photo preview functionality
+    document.getElementById('{{ form.photo.id_for_label }}').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                let preview = document.getElementById('photo-preview');
+                if (!preview) {
+                    // Create preview if it doesn't exist
+                    const previewContainer = document.createElement('div');
+                    previewContainer.className = 'text-center mb-3';
+                    previewContainer.innerHTML = `
+                        <img id="photo-preview" class="rounded-circle" width="100" height="100" style="object-fit: cover;">
+                        <div><small class="text-muted">Photo preview</small></div>
+                    `;
+                    e.target.parentNode.insertBefore(previewContainer, e.target);
+                    preview = document.getElementById('photo-preview');
+                }
+                preview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    // Form validation enhancement
+    const form = document.querySelector('form');
+    const inputs = form.querySelectorAll('input[required], select[required]');
+    
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            if (this.value.trim() === '') {
+                this.classList.add('is-invalid');
+            } else {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+            }
+        });
+    });
+    
+    // Auto-generate student ID if empty
+    const firstNameField = document.getElementById('{{ form.first_name.id_for_label }}');
+    const lastNameField = document.getElementById('{{ form.last_name.id_for_label }}');
+    const studentIdField = document.getElementById('{{ form.student_id.id_for_label }}');
+    
+    function generateStudentId() {
+        if (!studentIdField.value && firstNameField.value && lastNameField.value) {
+            const year = new Date().getFullYear();
+            const initials = (firstNameField.value.charAt(0) + lastNameField.value.charAt(0)).toUpperCase();
+            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            studentIdField.value = `${year}${initials}${random}`;
+        }
+    }
+    
+    firstNameField.addEventListener('blur', generateStudentId);
+    lastNameField.addEventListener('blur', generateStudentId);
+</script>
+{% endblock %}
+

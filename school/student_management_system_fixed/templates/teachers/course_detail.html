@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}تفاصيل المقرر: {{ course.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">تفاصيل المقرر: {{ course.name }} ({{ course.code }})</h1>
+    <p class="lead">الفصل الدراسي: {{ course.semester }}</p>
+    <p class="lead">السنة الدراسية: {{ course.year }}</p>
+    <p class="lead">القسم: {{ course.department.name }}</p>
+
+    <h2 class="mt-5">الطلاب المسجلون في هذا المقرر:</h2>
+    {% if students_in_course %}
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>اسم الطالب</th>
+                    <th>البريد الإلكتروني</th>
+                    <th>الدرجة</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students_in_course %}
+                <tr>
+                    <td>{{ student.full_name }}</td>
+                    <td>{{ student.email }}</td>
+                    <td>
+                        {% with grade=student.grade_set.filter(course=course).first %}
+                            {% if grade %}
+                                {{ grade.score }}
+                            {% else %}
+                                لم يتم إدخال درجة
+                            {% endif %}
+                        {% endwith %}
+                    </td>
+                    <td>
+                        <a href="{% url 'edit_student_grade' student.id course.id %}" class="btn btn-sm btn-primary">تعديل الدرجة</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        لا يوجد طلاب مسجلون في هذا المقرر حالياً.
+    </div>
+    {% endif %}
+    <a href="{% url 'teacher_dashboard' %}" class="btn btn-secondary mt-3">العودة للوحة التحكم</a>
+</div>
+{% endblock %}
+
+

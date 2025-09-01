@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}تعديل درجة الطالب{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">تعديل درجة الطالب: {{ student.full_name }} في مقرر {{ course.name }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary">حفظ الدرجة</button>
+        <a href="{% url 'teacher_course_detail' course.id %}" class="btn btn-secondary">إلغاء</a>
+    </form>
+</div>
+{% endblock %}
+
+
